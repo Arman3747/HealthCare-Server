@@ -11,6 +11,7 @@
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts"
   },
   "dependencies": {
+    "@openrouter/sdk": "^0.9.11",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "@types/cookie-parser": "^1.4.10",
@@ -24,6 +25,7 @@
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.1.0",
+    "openai": "^6.29.0",
     "pg": "^8.19.0",
     "zod": "^4.3.6"
   },
