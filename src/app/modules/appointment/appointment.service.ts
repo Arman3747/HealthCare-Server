@@ -1,4 +1,6 @@
 import { prisma } from "../../../../lib/prisma";
+import config from "../../../config";
+import { stripe } from "../../helper/stripe";
 import { IJWTPayload } from "../../types/common";
 
 import { v4 as uuidv4 } from "uuid";
@@ -61,7 +63,7 @@ const createAppointment = async (
 
     const transactionId = uuidv4();
 
-    await tnx.payment.create({
+    const paymentData = await tnx.payment.create({
       data: {
         appointmentId: appointmentData.id,
         amount: doctorData.appointmentFee,
@@ -69,7 +71,39 @@ const createAppointment = async (
       },
     });
 
-    return appointmentData;
+    /***
+     *
+     * STRIPE
+     *
+     ***/
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      customer_email: user.email,
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: `Appointment with ${doctorData.name}`,
+            },
+            unit_amount: doctorData.appointmentFee * 100, // in cent
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        appointmentId: appointmentData.id,
+        paymentId: paymentData.id,
+      },
+      success_url: config.successUrl,
+      cancel_url: config.cancelUrl,
+    });
+
+    // console.log(session);
+
+    return { paymentUrl: session.url };
   });
 
   return result;

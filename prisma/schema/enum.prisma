@@ -23,6 +23,6 @@ enum AppointmentStatus {
 }
 
 enum PaymentStatus {
-    PAIN
+    PAID
     UNPAID
 }
