@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtHelper } from "../helper/jwtHelper";
 import config from "../../config";
+import { IJWTPayload } from "../types/common";
 
 const auth = (...roles: string[]) => {
   return async (
     req: Request & { user?: any },
+    // req: Request & { user?: IJWTPayload },
     res: Response,
     next: NextFunction,
   ) => {
